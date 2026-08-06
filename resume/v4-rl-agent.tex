@@ -1,0 +1,75 @@
+% !TEX program = xelatex
+% 版本四：强化学习算法实习生（Agentic RL / 决策智能方向）
+% 目标：昆仑芯、上海AI实验室、杭州零界演化、蚂蚁集团
+\documentclass{resume}
+\usepackage{zh_CN-Adobefonts_external}
+\usepackage{linespacing_fix}
+
+\begin{document}
+
+\name{李天明}
+\contactInfo{litianming@stu.cdut.edu.cn}{19262840906}{\_\_github\_\_}
+
+\section{求职意向}
+\vspace{-4pt}
+\textbf{强化学习算法实习生（Agentic RL / 决策智能）} \hfill 上海 · 随时到岗
+
+\section{教育背景}
+\datedsubsection{上海交通大学（C9） — 机械硕士}{2026.09 — 2029.03}
+主修：机器人学中的强化学习、最优估计与信息融合
+
+\datedsubsection{成都理工大学（双一流） — 人工智能学士}{2022.09 — 2026.06}
+深度学习与强化学习、智能计算核心课程90+
+
+\section{核心项目}
+\datedsubsection{\textbf{基于深度强化学习的无人机避障算法研究}}{2025.09 — 2026.04}
+\role{第一作者}{Python · PyTorch · SAC · PPO · Gym-PyBullet-Drones}
+\begin{itemize}
+  \item 独立实现 \textbf{PPO 与 SAC} 强化学习核心算法，在三维连续状态/动作空间下完成训练与对比实验
+  \item 针对 SAC 在稀疏奖励环境中探索不足的问题，设计\textbf{动态熵温度自适应调节机制}，根据策略熵值动态调整探索强度
+  \item 设计\textbf{规则化安全投影层}：通过数学约束限制动作空间，训练初期碰撞率\textbf{降低 80\%}
+  \item 开展4组对照实验（12次独立训练），从\textbf{成功率、碰撞率、收敛速度}三维度评估
+  \item SAC在密集动态障碍下成功率比PPO高 \textbf{8\%}，PPO收敛更平稳
+\end{itemize}
+
+\datedsubsection{\textbf{多工具协同的 ReAct 智能体系统}}{2026.08 — 至今}
+\role{独立开发}{Python · LangGraph · DeepSeek API · ChromaDB}
+\begin{itemize}
+  \item 构建 ReAct Agent 系统，实现多轮推理与工具调用的完整闭环
+  \item 设计\textbf{双层记忆系统}（短期+长期），保障多轮对话连续性
+  \item 该工作为后续 \textbf{Agentic RL}（将强化学习应用于Agent任务规划与工具调用）奠定工程基础
+\end{itemize}
+
+\datedsubsection{\textbf{光伏功率预测与空间降尺度研究}}{2024.12 — 2025.09}
+\role{第二作者 · EI会议}{Python · KNN · 随机森林 · 时间序列}
+\begin{itemize}
+  \item 提出 KNN空间降尺度 + 随机森林回归 预测框架，RMSE\textbf{降低18.7\%}，R²达0.92
+\end{itemize}
+
+\datedsubsection{\textbf{脉冲星计时噪声与大气延迟建模}}{2024.08 — 2024.10}
+\role{负责人 · 数维杯国际二等奖}{傅里叶回归 · 时序预测 · 大气模型}
+\begin{itemize}
+  \item 利用\textbf{傅里叶回归}拟合计时噪声（拟合度>97\%），双指数平滑与随机森林预测趋势
+  \item 基于Saastamoinen与Herring模型建立高频折射延迟模型（天顶延迟≤7.69ns）
+\end{itemize}
+
+\section{技术能力}
+\begin{itemize}
+  \item \textbf{强化学习}：PPO、SAC、连续控制、安全约束策略、奖励设计
+  \item \textbf{大模型后训练}：SFT、RLHF、DPO、GRPO（原理掌握）
+  \item \textbf{深度学习}：PyTorch、Transformer架构、分布式训练
+  \item \textbf{Agent系统}：ReAct、Tool Use、LangGraph
+  \item \textbf{工程工具}：Python、Git、Linux、MATLAB
+\end{itemize}
+
+\section{荣誉与论文}
+\begin{itemize}
+  \item IEEE CISAT 2025 EI会议论文（第二作者）
+  \item 第十届"数维杯"国际数学建模竞赛 国际二等奖
+  \item 第五届全国大学生技术创新创业大赛 全国三等奖
+\end{itemize}
+
+\section{实习信息}
+可实习3个月以上，每周4-5天 | 2026年8月到岗
+
+\end{document}

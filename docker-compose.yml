@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  # --- API server ---
+  api:
+    build: .
+    container_name: agent-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./docs:/app/docs:ro
+    command: python main.py --api --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # --- Web UI (optional — uncomment to enable) ---
+  # ui:
+  #   build: .
+  #   container_name: agent-ui
+  #   ports:
+  #     - "7860:7860"
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./logs:/app/logs
+  #     - ./docs:/app/docs:ro
+  #   command: python main.py --ui --host 0.0.0.0 --ui-port 7860
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - api

@@ -1,0 +1,38 @@
+# Core
+pydantic>=2.0
+pydantic-settings>=2.0
+
+# LLM
+openai>=1.0
+anthropic>=0.30
+httpx>=0.27
+
+# RAG
+chromadb>=0.5
+langchain-text-splitters>=0.2
+tiktoken>=0.7
+
+# Graph / workflow
+langgraph>=0.2
+
+# Search
+tavily-python>=0.3
+
+# Embedding (optional — uncomment to enable local models)
+# sentence-transformers>=3.0
+
+# Eval
+datasets>=2.19
+rouge-score>=0.1
+ragas>=0.1
+
+# API server
+fastapi>=0.110
+uvicorn[standard]>=0.29
+
+# Web UI
+gradio>=4.0
+
+# CLI / DX
+rich>=13.0
+python-dotenv>=1.0

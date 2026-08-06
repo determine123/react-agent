@@ -1,0 +1,15 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Runtime artifacts
+logs/
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,71 @@
+% !TEX program = xelatex
+% 版本五：科学智能 / AI for Science 实习生
+% 目标：上海AI实验室（AI4S）、上海科学智能研究院
+\documentclass{resume}
+\usepackage{zh_CN-Adobefonts_external}
+\usepackage{linespacing_fix}
+
+\begin{document}
+
+\name{李天明}
+\contactInfo{litianming@stu.cdut.edu.cn}{19262840906}{\_\_github\_\_}
+
+\section{求职意向}
+\vspace{-4pt}
+\textbf{科学智能 / AI for Science 实习生} \hfill 上海 · 随时到岗
+
+\section{教育背景}
+\datedsubsection{上海交通大学（C9） — 机械硕士}{2026.09 — 2029.03}
+主修：凸优化、最优估计与信息融合、计算流体动力学
+
+\datedsubsection{成都理工大学（双一流） — 人工智能学士}{2022.09 — 2026.06}
+主修：深度学习与强化学习、智能计算、信号与系统
+
+\section{科研项目}
+\datedsubsection{\textbf{光伏功率预测与空间降尺度研究}}{2024.12 — 2025.09}
+\role{第二作者 · EI会议（IEEE CISAT 2025）}{Python · Scikit-learn · KNN · 随机森林 · 时间序列分析}
+\begin{itemize}
+  \item 针对低分辨率NWP气象数据导致光伏预测精度不足的科学问题，提出 \textbf{KNN空间降尺度 + 随机森林回归} 混合框架
+  \item 将5km网格粗数据插值至站点级，融合时序特征（正弦-余弦循环编码、滞后功率变量）与气象特征
+  \item 完成\textbf{5折交叉验证}与\textbf{消融实验}，验证时序特征模块贡献 \textbf{12\%} 精度提升
+  \item 实验成果：RMSE\textbf{降低18.7\%}，R²达0.92，中低出力段偏差 \textbf{<4.2\%}
+\end{itemize}
+
+\datedsubsection{\textbf{脉冲星计时噪声与大气延迟建模}}{2024.08 — 2024.10}
+\role{负责人 · 数维杯国际二等奖}{傅里叶分析 · 时序预测 · 大气物理模型}
+\begin{itemize}
+  \item 针对深空导航中脉冲星计时误差的科学问题，构建多模型融合预测框架
+  \item 利用\textbf{傅里叶回归}拟合计时噪声（拟合度>97\%，最高达99.99\%）
+  \item 采用\textbf{双指数平滑与随机森林}分别实现短期与长期趋势预测（RMSE=0.00689）
+  \item 基于Saastamoinen与Herring模型建立高频折射延迟模型（天顶延迟≤7.69ns）
+  \item 独立完成核心模型构建、代码实现与论文撰写
+\end{itemize}
+
+\datedsubsection{\textbf{基于深度强化学习的无人机避障算法研究}}{2025.09 — 2026.04}
+\role{第一作者}{PyTorch · SAC · PPO · 物理仿真}
+\begin{itemize}
+  \item 基于gym-pybullet-drones搭建物理仿真环境，完成无人机动力学建模与物理仿真集成
+  \item 设计安全投影层（碰撞率↓80\%），系统对比PPO与SAC算法性能
+  \item 建立完整的\textbf{实验可复现体系}（多随机种子、对照实验、统计分析）
+\end{itemize}
+
+\section{技术能力}
+\begin{itemize}
+  \item \textbf{科学计算}：Python、MATLAB、数值分析、优化理论
+  \item \textbf{机器学习}：Scikit-learn、随机森林、KNN、时间序列预测
+  \item \textbf{深度学习}：PyTorch、Transformer、强化学习
+  \item \textbf{数据处理}：Pandas、NumPy、特征工程、消融实验
+  \item \textbf{物理建模}：大气延迟模型、动力学仿真、传感器融合
+\end{itemize}
+
+\section{荣誉与论文}
+\begin{itemize}
+  \item IEEE CISAT 2025 EI会议论文（第二作者）
+  \item 第十届"数维杯"国际数学建模竞赛 国际二等奖
+  \item 第五届全国大学生技术创新创业大赛 全国三等奖
+\end{itemize}
+
+\section{实习信息}
+可实习3个月以上，每周4-5天 | 2026年8月到岗
+
+\end{document}

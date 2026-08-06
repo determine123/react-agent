@@ -1,0 +1,98 @@
+[
+  {
+    "id": "math_01",
+    "question": "What is (15 + 27) * 3?",
+    "type": "calculator",
+    "expected_tool": "calculate",
+    "expected_answer_contains": "126"
+  },
+  {
+    "id": "math_02",
+    "question": "Compute the area of a circle with radius 5.",
+    "type": "calculator",
+    "expected_tool": "calculate",
+    "expected_answer_contains": "78.5"
+  },
+  {
+    "id": "math_03",
+    "question": "Calculate 15 + 27.",
+    "type": "calculator",
+    "expected_tool": "calculate",
+    "expected_answer_contains": "42"
+  },
+  {
+    "id": "math_04",
+    "question": "What is 2 to the power of 10?",
+    "type": "calculator",
+    "expected_tool": "calculate",
+    "expected_answer_contains": "1024"
+  },
+  {
+    "id": "math_05",
+    "question": "What is the square root of 144, expressed as 144 ** 0.5?",
+    "type": "calculator",
+    "expected_tool": "calculate",
+    "expected_answer_contains": "12"
+  },
+
+  {
+    "id": "search_01",
+    "question": "What is the capital of France?",
+    "type": "search",
+    "expected_tool": null,
+    "expected_answer_contains": "Paris"
+  },
+  {
+    "id": "search_02",
+    "question": "What's the weather like in Shanghai today?",
+    "type": "search",
+    "expected_tool": "web_search",
+    "expected_answer_contains": ""
+  },
+  {
+    "id": "search_03",
+    "question": "What is the average rent for an apartment in Shanghai?",
+    "type": "search",
+    "expected_tool": "web_search",
+    "expected_answer_contains": ""
+  },
+
+  {
+    "id": "general_01",
+    "question": "Who wrote 'Pride and Prejudice'?",
+    "type": "general",
+    "expected_tool": null,
+    "expected_answer_contains": "Jane Austen"
+  },
+  {
+    "id": "general_02",
+    "question": "What is the core principle behind RAG technology?",
+    "type": "general",
+    "expected_tool": null,
+    "expected_answer_contains": "retrieval"
+  },
+  {
+    "id": "general_03",
+    "question": "Explain the ReAct framework in one sentence.",
+    "type": "general",
+    "expected_tool": null,
+    "expected_answer_contains": "reason"
+  },
+
+  {
+    "id": "rag_01",
+    "question": "Please summarize the main content of the project README.",
+    "type": "rag",
+    "expected_tool": null,
+    "context": "README.md",
+    "expected_answer_contains": ""
+  },
+  {
+    "id": "rag_02",
+    "question": "What are the key components of this agent system?",
+    "type": "rag",
+    "expected_tool": null,
+    "context": "rag_docs",
+    "expected_answer_contains": "agent"
+  }
+]

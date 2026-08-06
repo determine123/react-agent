@@ -1,0 +1,72 @@
+% !TEX program = xelatex
+% 版本三：大模型应用开发 / LLM 工程实习生
+% 目标：百度、美团、阶跃星辰、AI创业公司
+\documentclass{resume}
+\usepackage{zh_CN-Adobefonts_external}
+\usepackage{linespacing_fix}
+
+\begin{document}
+
+\name{李天明}
+\contactInfo{litianming@stu.cdut.edu.cn}{19262840906}{\_\_github\_\_}
+
+\section{求职意向}
+\vspace{-4pt}
+\textbf{大模型应用开发 / LLM 工程实习生} \hfill 上海 · 随时到岗
+
+\section{教育背景}
+\datedsubsection{上海交通大学（C9） — 机械硕士}{2026.09 — 2029.03}
+\datedsubsection{成都理工大学（双一流） — 人工智能学士}{2022.09 — 2026.06}
+
+\section{项目经历}
+\datedsubsection{\textbf{多工具协同的 ReAct 智能体系统}}{2026.08 — 至今}
+\role{独立开发}{Python · LangGraph · DeepSeek API · ChromaDB · FastAPI · Gradio · Docker}
+\begin{itemize}
+  \item 设计并实现完整 \textbf{ReAct Agent} 系统：感知→推理→行动→观察闭环，支持多轮对话与任务规划
+  \item 集成 \textbf{10+ 工具}（搜索、计算、天气、时间、文件笔记等），基于统一工具接口实现热插拔
+  \item 构建 \textbf{RAG 检索增强模块}：PDF/TXT文档加载→文本切分→Embedding→ChromaDB向量检索→LLM生成
+  \item 设计\textbf{双层记忆系统}（短期滑动窗口+长期JSON持久化），保障长对话上下文连贯性
+  \item 开发 \textbf{FastAPI REST接口 + Gradio WebUI}，完成 Docker 容器化部署
+  \item 建立自动化评估体系（14条测试用例），冒烟测试通过率 \textbf{93\%}
+\end{itemize}
+
+\datedsubsection{\textbf{航空专用轻量化大模型压缩与边缘部署}}{2025.07 — 2025.09}
+\role{核心成员}{PyTorch · BERT · TensorRT · Jetson AGX Orin}
+\begin{itemize}
+  \item 通过\textbf{知识蒸馏}将 BERT-base（110M）压缩至3层Transformer学生模型（18M），参数量\textbf{减少83.6\%}
+  \item 利用 \textbf{TensorRT FP16量化 + 算子融合} 部署至Jetson AGX Orin
+  \item 推理延迟 \textbf{2100ms → 92ms（↓95.6\%）}，GPU利用率 37\% → 89\%，准确率仅下降1.8\%
+\end{itemize}
+
+\datedsubsection{\textbf{基于YOLOv8的车辆检测系统}}{2024.11 — 2024.12}
+\role{项目负责人}{Python · YOLOv8 · Django}
+\begin{itemize}
+  \item 采用YOLOv8n模型训练，模型大小 \textbf{6.2MB}，推理速度 \textbf{25ms/帧}，mAP@50达0.639
+  \item 基于Django开发全栈应用：前端异步上传→后端推理→结果可视化闭环
+\end{itemize}
+
+\datedsubsection{\textbf{光伏功率预测与空间降尺度研究}}{2024.12 — 2025.09}
+\role{第二作者 · EI会议}{Python · KNN · 随机森林}
+\begin{itemize}
+  \item 提出 KNN空间降尺度 + 随机森林回归 预测框架，RMSE\textbf{降低18.7\%}，R²达0.92
+\end{itemize}
+
+\section{技术能力}
+\begin{itemize}
+  \item \textbf{大模型应用}：ReAct Agent、RAG、Prompt Engineering、Function Calling
+  \item \textbf{Agent框架}：LangGraph、LangChain
+  \item \textbf{向量数据库}：ChromaDB、Embedding、检索优化
+  \item \textbf{后端部署}：FastAPI、Gradio、Docker、Git
+  \item \textbf{模型优化}：知识蒸馏、TensorRT量化、模型压缩
+\end{itemize}
+
+\section{荣誉}
+\begin{itemize}
+  \item IEEE CISAT 2025 EI会议论文（第二作者）
+  \item 第十届"数维杯"国际数学建模竞赛 国际二等奖
+\end{itemize}
+
+\section{实习信息}
+可实习3个月以上，每周4-5天 | 2026年8月到岗
+
+\end{document}

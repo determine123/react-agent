@@ -1,0 +1,143 @@
+% !TEX program = xelatex
+% 李天明 — AI Agent / 大模型应用开发 实习简历
+% 基于 hijiangtao/resume 模板
+\documentclass{resume}
+\usepackage{zh_CN-Adobefonts_external}
+\usepackage{linespacing_fix}
+\usepackage{cite}
+
+\begin{document}
+
+% ---------------------------------------------------------------------------
+% 个人信息
+% ---------------------------------------------------------------------------
+\name{李天明}
+\contactInfo{litianming@stu.cdut.edu.cn}{19262840906}{\_\_github\_\_}
+
+% ---------------------------------------------------------------------------
+% 求职意向
+% ---------------------------------------------------------------------------
+\section{求职意向}
+\vspace{-4pt}
+\textbf{AI Agent / 大模型应用开发实习生} \hfill 上海 · 随时到岗
+
+% ---------------------------------------------------------------------------
+% 教育经历
+% ---------------------------------------------------------------------------
+\section{教育背景}
+\datedsubsection{成都理工大学（双一流）}{2022.09 — 2026.06}
+\textbf{人工智能} 本科
+\begin{itemize}
+  \item 核心课程：深度学习、强化学习、知识图谱、机器学习、数据结构与算法、嵌入式系统
+  \item 研究方向：大语言模型 Agent 系统、深度强化学习、无人机自主决策
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+% 技术能力
+% ---------------------------------------------------------------------------
+\section{技术栈}
+\begin{itemize}
+  \item \textbf{编程语言}：Python（熟练）、C/C++（基础）、SQL（基础）
+  \item \textbf{大模型 \& Agent}：LangGraph、OpenAI/DeepSeek API、ReAct 架构、Function Calling、Prompt Engineering、工具路由
+  \item \textbf{RAG \& 知识库}：ChromaDB、Embedding、文档解析（PDF/TXT/MD）、文本分割、向量检索、HyDE、Self-RAG
+  \item \textbf{强化学习}：PyTorch、Stable-Baselines3、Gymnasium、PPO、SAC、连续控制
+  \item \textbf{工程部署}：FastAPI、Gradio、Docker、Docker Compose、Git、Linux、CI/CD（GitHub Actions）
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+% 项目经历 1：Agent 系统（核心）
+% ---------------------------------------------------------------------------
+\section{项目经历}
+\datedsubsection{\textbf{基于 ReAct 的多工具智能 Agent 系统}}{2026.08 — 至今}
+\role{独立开发}{Python · DeepSeek · LangGraph · ChromaDB · FastAPI · Gradio}
+\begin{itemize}
+  \item 自主设计 ReAct 闭环引擎，实现 \textbf{感知→推理→行动→观察→反馈} 的循环式任务处理流程，支持最大步数限制与状态管理
+  \item 搭建可扩展工具注册系统，集成 \textbf{10个工具}：Tavily搜索、AST安全计算器、天气查询、时间查询、网页抓取、文件笔记等
+  \item 实现 \textbf{工具路由器}：规则匹配+语义分类，数学/天气等简单查询零 LLM 调用直达工具，延迟从2s降至毫秒级
+  \item 设计 \textbf{双层记忆机制}：deque滑动窗口（短期）+ JSON持久化（长期），支持跨会话上下文保持
+  \item 实现 \textbf{HyDE 与 Self-RAG} 两种高级检索策略：假设性文档嵌入提升召回率，自我验证保证答案可靠性
+  \item 基于 LangGraph 实现 \textbf{多Agent协作}（Planner+Executor），任务自动拆解→并行执行→结果合并
+  \item 开发 FastAPI（6端点）+ Gradio Web UI，Docker Compose 一键部署，GitHub Actions CI/CD 自动化测试
+  \item 搭建 \textbf{评估体系}：14条测试用例 + RAGAS四维指标（faithfulness/relevancy/precision/recall）+ HTML可视化报告
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+% 项目经历 2：RAG 智能问答
+% ---------------------------------------------------------------------------
+\datedsubsection{\textbf{RAG 增强型智能问答与记忆增强系统}}{2026.08 — 至今}
+\role{与上述 Agent 项目同仓库，侧重知识检索与评估}{LangGraph · ChromaDB · RAGAS · Sentence-Transformers}
+\begin{itemize}
+  \item 构建完整 RAG 预处理链路：文档加载（PDF/TXT/MD）→ 递归文本分割（重叠窗口）→ ChromaDB 向量存储
+  \item 支持 3 种 Embedding 模型切换（ONNX内置/OpenAI API/Sentence-Transformers本地）
+  \item 实现 \textbf{Self-Critique 自我反思}机制：LLM 生成→批判检查→修正精炼，提升回答准确率
+  \item 设计 \textbf{Plan-and-Execute} 策略：复杂任务先规划步骤再逐步执行
+  \item 所有模块通过 \texttt{\_\_init\_\_.py} 暴露统一接口，\textbf{44项 pytest} 单元测试 + 冒烟测试全覆盖
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+% 科研经历 1：强化学习
+% ---------------------------------------------------------------------------
+\section{科研经历}
+\datedsubsection{\textbf{基于深度强化学习的无人机动态避障算法}}{2025.10 — 至今}
+\role{第一作者}{Python · PyTorch · SAC · PPO · Gym-PyBullet-Drones}
+\begin{itemize}
+  \item 基于 Gym-PyBullet-Drones 搭建三维无人机动态避障仿真环境
+  \item 实现 PPO、SAC 两种强化学习算法，对比不同算法在复杂障碍环境中的性能
+  \item 针对 SAC 稀疏奖励探索不足问题，设计\textbf{动态温度参数调节机制}，根据奖励稀疏程度自适应调整探索强度
+  \item 引入安全投影策略约束动作空间，提高训练初期安全性
+  \item 设计多随机种子、多障碍密度实验体系，对成功率、碰撞率、收敛速度进行全面评估
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+% 科研经历 2：EI 论文
+% ---------------------------------------------------------------------------
+\datedsubsection{\textbf{光伏功率预测与空间降尺度研究}}{2024.10 — 2025.07}
+\role{第二作者 · EI 会议论文（IEEE CISAT 2025）}{Python · Random Forest · KNN · 时间序列}
+\begin{itemize}
+  \item 针对气象预测空间分辨率不足导致光伏预测误差大，提出融合\textbf{空间降尺度与机器学习预测}方法
+  \item 使用 KNN 完成气象变量空间插值，构建随机森林模型融合历史功率与气象特征
+  \item 负责数据处理、模型训练、参数优化及论文撰写；RMSE 降低 18.7\%，中低功率区间误差控制在 4.2\% 以内
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+% 科研经历 3：数学建模
+% ---------------------------------------------------------------------------
+\datedsubsection{\textbf{脉冲星计时噪声与大气延迟建模}}{2024.08 — 2024.10}
+\role{项目负责人 · 数维杯国际数学建模竞赛二等奖}{傅里叶分析 · 时序预测 · 大气模型}
+\begin{itemize}
+  \item 使用傅里叶回归拟合计时噪声，拟合度达 99.99\%，双指数平滑与随机森林预测长期趋势
+  \item 基于 Saastamoinen 与 Herring 模型建立大气延迟修正，获国际二等奖
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+% 实践经历
+% ---------------------------------------------------------------------------
+\section{实践经历}
+\datedsubsection{成都理工大学航空模型协会 — 副会长}{2022.07 — 2023.07}
+\begin{itemize}
+  \item 组织无人机技术培训 50+ 人次，负责飞控原理、传感器调试等技术培训，推动协会获评校级十佳社团
+  \item 独立完成轮式机器人：原理图设计 → PCB布局 → 元器件焊接 → 嵌入式调试，实现循迹避障
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+% 荣誉奖励
+% ---------------------------------------------------------------------------
+\section{荣誉奖励}
+\begin{itemize}
+  \item 第十届“数维杯”国际大学生数学建模挑战赛 \textbf{二等奖}
+  \item 第五届全国大学生技术创新创业大赛 \textbf{全国三等奖}
+  \item IEEE CISAT 2025 EI 会议论文（第二作者）
+  \item 校优秀志愿者 · 大学生通讯社优秀干事
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+% 个人优势
+% ---------------------------------------------------------------------------
+\section{个人优势}
+\begin{itemize}
+  \item \textbf{全栈AI能力}：从 LLM Agent 系统设计 → Python 实现 → API/UI 封装 → Docker 部署 → CI/CD 测试，具备完整工程闭环
+  \item \textbf{AI+机器人交叉}：同时具备智能体系统开发与强化学习研究经验，能快速适应具身智能、自动驾驶等前沿方向
+  \item \textbf{工程素养}：44项自动化测试、结构化日志、性能指标收集，重视代码质量与可维护性
+\end{itemize}
+
+\end{document}

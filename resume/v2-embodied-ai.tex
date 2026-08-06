@@ -1,0 +1,69 @@
+% !TEX program = xelatex
+% 版本二：具身智能 / 机器人算法实习生
+% 目标：银河通用机器人、上海AI实验室、英伟达机器人、小鹏汽车
+\documentclass{resume}
+\usepackage{zh_CN-Adobefonts_external}
+\usepackage{linespacing_fix}
+
+\begin{document}
+
+\name{李天明}
+\contactInfo{litianming@stu.cdut.edu.cn}{19262840906}{\_\_github\_\_}
+
+\section{求职意向}
+\vspace{-4pt}
+\textbf{具身智能 / 机器人算法实习生} \hfill 上海 · 随时到岗
+
+\section{教育背景}
+\datedsubsection{上海交通大学（C9） — 机械硕士}{2026.09 — 2029.03}
+主修：机器人学中的强化学习、空间机器人技术、现代导航算法与传感器融合
+
+\datedsubsection{成都理工大学（双一流） — 人工智能学士}{2022.09 — 2026.06}
+深度学习与强化学习、嵌入式系统核心课程90+
+
+\section{核心项目}
+\datedsubsection{\textbf{基于深度强化学习的无人机避障算法研究}}{2025.09 — 2026.04}
+\role{第一作者}{Python · PyTorch · SAC · PPO · Gym-PyBullet-Drones}
+\begin{itemize}
+  \item 基于 \textbf{gym-pybullet-drones} 搭建无人机动力学仿真环境，完成运动学建模与物理仿真集成
+  \item 独立设计\textbf{规则化安全投影层}：通过数学约束将动作空间限制在安全可行域内，训练初期碰撞率\textbf{降低 80\%}
+  \item 系统集成 \textbf{PPO 与 SAC} 强化学习算法，开展4组对照实验（12次独立训练），从成功率、碰撞率、收敛速度多维度评估
+  \item 发现 \textbf{SAC 在密集动态障碍下成功率比 PPO 高 8\%}，PPO 收敛更平稳
+  \item 安全投影层机制可迁移至机器人真机部署的安全约束场景
+\end{itemize}
+
+\datedsubsection{\textbf{智能循迹与避障机器人系统}}{2024.02 — 2024.10}
+\role{项目负责人}{STC32单片机 · C语言 · PCB设计 · 传感器融合}
+\begin{itemize}
+  \item 独立完成轮式机器人\textbf{全链路开发}：原理图设计 → PCB布局布线（立创EDA）→ 元器件焊接 → C语言嵌入式编程
+  \item 基于STC32单片机实现红外循迹、PWM调速、超声波避障，设计多传感器融合避障策略
+  \item 在复杂路径上稳定循迹并避让动态障碍物，获实训满分评价
+\end{itemize}
+
+\datedsubsection{\textbf{光伏功率预测与空间降尺度研究}}{2024.12 — 2025.09}
+\role{第二作者 · EI会议（IEEE CISAT 2025）}{Python · KNN · 随机森林 · 时间序列分析}
+\begin{itemize}
+  \item 提出 KNN空间降尺度 + 随机森林回归 混合框架，将5km网格NWP数据插值至站点级
+  \item 引入时序循环编码与滞后功率变量，RMSE\textbf{降低 18.7\%}，R²达0.92
+\end{itemize}
+
+\section{技术能力}
+\begin{itemize}
+  \item \textbf{强化学习}：PPO、SAC、连续控制、安全约束策略
+  \item \textbf{机器人仿真}：Gym-PyBullet-Drones、动力学建模、物理仿真
+  \item \textbf{硬件开发}：原理图/PCB设计、嵌入式C语言、传感器融合
+  \item \textbf{深度学习}：PyTorch、模型训练与调优
+  \item \textbf{工程工具}：Git、Linux、MATLAB
+\end{itemize}
+
+\section{荣誉与论文}
+\begin{itemize}
+  \item IEEE CISAT 2025 EI会议论文（第二作者）
+  \item 第十届"数维杯"国际数学建模竞赛 国际二等奖
+  \item 持有 \textbf{UOM 无人机飞行合格证}，具备自组穿越机实操经验
+\end{itemize}
+
+\section{实习信息}
+可实习3个月以上，每周4-5天 | 2026年8月到岗
+
+\end{document}

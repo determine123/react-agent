@@ -1,0 +1,69 @@
+% !TEX program = xelatex
+% 版本一：AI Agent / 智能体应用开发实习生
+% 目标：字节跳动、百度昆仑芯、阶跃星辰、上海AI实验室
+\documentclass{resume}
+\usepackage{zh_CN-Adobefonts_external}
+\usepackage{linespacing_fix}
+
+\begin{document}
+
+\name{李天明}
+\contactInfo{litianming@stu.cdut.edu.cn}{19262840906}{\_\_github\_\_}
+
+\section{求职意向}
+\vspace{-4pt}
+\textbf{AI Agent / 智能体应用开发实习生} \hfill 上海 · 随时到岗
+
+\section{教育背景}
+\datedsubsection{上海交通大学（C9） — 机械硕士}{2026.09 — 2029.03}
+主修：神经网络与深度学习、凸优化、最优估计与信息融合
+
+\datedsubsection{成都理工大学（双一流） — 人工智能学士}{2022.09 — 2026.06}
+GPA前10\% | 深度学习与强化学习、知识图谱核心课程90+
+
+\section{核心项目}
+\datedsubsection{\textbf{多工具协同的 ReAct 智能体系统}}{2026.08 — 至今}
+\role{独立开发}{Python · DeepSeek API · LangGraph · ChromaDB · FastAPI · Gradio}
+\begin{itemize}
+  \item 基于 \textbf{LangGraph} 构建节点化 Agent 工作流，实现 \textbf{感知→推理→行动→观察} 完整 ReAct 闭环，通过条件路由支持自主纠错与重规划
+  \item 设计统一工具接口规范，集成网络搜索、数学计算、天气查询、文件笔记等 \textbf{10+ 工具}，支持热插拔与动态注册
+  \item 构建\textbf{双层记忆系统}（短期滑动窗口 + 长期JSON持久化），保障长对话上下文连贯性
+  \item 基于 \textbf{ChromaDB} 实现本地文档（PDF/TXT）向量索引与检索，优化 Chunk Size 与 Top-K 参数降低幻觉率
+  \item 开发 \textbf{FastAPI 后端 + Gradio WebUI}，实现端到端联调与 Docker 一键部署
+  \item 设计 API 异常自动重试与降级回复机制，提升系统鲁棒性
+\end{itemize}
+
+\datedsubsection{\textbf{航空专用轻量化大模型压缩与边缘部署}}{2025.07 — 2025.09}
+\role{核心成员}{PyTorch · BERT · TensorRT · Jetson AGX Orin · 知识蒸馏}
+\begin{itemize}
+  \item 设计 \textbf{3层 Transformer 学生网络}，通过知识蒸馏（KL散度+交叉熵联合损失）对 BERT-base（110M）压缩，参数量\textbf{减少 83.6\%}（110M → 18M）
+  \item 利用 \textbf{TensorRT FP16 量化}与算子融合，在 Jetson AGX Orin 部署，推理延迟 \textbf{2100ms → 92ms（加速95.6\%）}，GPU利用率 37\% → 89\%
+\end{itemize}
+
+\datedsubsection{\textbf{基于深度强化学习的无人机避障算法研究}}{2025.09 — 2026.04}
+\role{第一作者}{PyTorch · SAC · PPO · Gym-PyBullet-Drones}
+\begin{itemize}
+  \item 将无人机视为物理世界智能体，构建感知→推理→决策→执行→反馈完整决策闭环
+  \item 设计\textbf{规则化安全投影层}（数学约束限制动作空间），训练初期碰撞率\textbf{降低 80\%}
+  \item 系统对比 PPO 与 SAC，开展12次独立训练，SAC在密集动态障碍下成功率比PPO高 \textbf{8\%}
+\end{itemize}
+
+\section{技术能力}
+\begin{itemize}
+  \item \textbf{Agent \& LLM}：ReAct / Function Calling、LangGraph、Prompt Engineering（CoT/Few-shot）
+  \item \textbf{RAG \& 检索}：ChromaDB、文档解析与切分、Embedding、检索质量调优
+  \item \textbf{模型优化}：知识蒸馏、TensorRT量化、模型压缩（110M→18M）
+  \item \textbf{工程部署}：FastAPI、Gradio、Docker、Git、Linux
+  \item \textbf{深度学习}：PyTorch、PPO/SAC、Transformer架构
+\end{itemize}
+
+\section{荣誉与论文}
+\begin{itemize}
+  \item IEEE CISAT 2025 EI会议论文（第二作者）
+  \item 第十届"数维杯"国际数学建模竞赛 国际二等奖
+\end{itemize}
+
+\section{实习信息}
+可实习3个月以上，每周4-5天 | 2026年8月到岗
+
+\end{document}
