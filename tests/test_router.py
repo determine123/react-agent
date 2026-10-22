@@ -1,7 +1,8 @@
 """Unit tests for core/tool_router.py"""
 
 import pytest
-from core.tool_router import ToolRouter, Intent, RoutingResult
+
+from core.tool_router import Intent, RoutingResult, ToolRouter
 
 
 class TestToolRouter:
@@ -15,6 +16,7 @@ class TestToolRouter:
         assert r.intent == Intent.MATH
         assert r.tool_name == "calculate"
         assert r.confidence >= 0.85
+        assert r.tool_args["expression"] == "3 + 5"
 
     def test_math_chinese(self, router):
         r = router.classify("计算 15 加 27")
@@ -61,7 +63,6 @@ class TestToolRouter:
         assert r.intent == Intent.GENERAL or r.confidence < 0.9
 
     def test_complex_analysis(self, router):
-        r = router.classify("比较一下 React 和 Vue 的优缺点")
         # Should not hit a high-confidence tool match
         assert not router.should_skip_llm("比较一下 React 和 Vue 的优缺点")
 
@@ -75,11 +76,20 @@ class TestToolRouter:
     def test_no_skip_complex(self, router):
         assert router.should_skip_llm("帮我写一篇关于AI的文章") is False
 
+    def test_article_request_is_not_misrouted_as_note(self, router):
+        r = router.classify("帮我写一篇关于AI的文章")
+        assert r.intent == Intent.GENERAL
+        assert r.tool_name is None
+
     # --- Argument extraction ---
     def test_extract_math_expression(self, router):
         r = router.classify("计算 (15 + 27) * 3")
         assert "expression" in r.tool_args
         assert "15" in r.tool_args["expression"] or "15" in str(r.tool_args)
+
+    def test_extract_math_expression_with_constants(self, router):
+        r = router.classify("计算 2 * pi + e")
+        assert r.tool_args["expression"] == "2 * pi + e"
 
     def test_extract_city(self, router):
         r = router.classify("深圳今天天气")
@@ -99,6 +109,11 @@ class TestToolRouter:
     # --- Notes ---
     def test_write_note(self, router):
         r = router.classify("帮我记下来：明天下午3点开会")
+        assert r.intent == Intent.NOTE_WRITE
+        assert r.tool_name == "write_note"
+
+    def test_write_note_phrase_is_still_recognized(self, router):
+        r = router.classify("帮我写笔记：项目计划")
         assert r.intent == Intent.NOTE_WRITE
         assert r.tool_name == "write_note"
 
