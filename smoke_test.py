@@ -67,12 +67,15 @@ def main() -> None:
 # ---------------------------------------------------------------------------
 
 def test_config() -> None:
-    from config import load_config
+    import os
+
+    from config import LLMConfig, load_config
 
     cfg = load_config()
-    assert cfg.llm.model == "deepseek-chat", f"Expected deepseek-chat, got {cfg.llm.model}"
+    expected_model = os.getenv("LLM_MODEL", LLMConfig().model)
+    assert cfg.llm.model == expected_model, f"Expected {expected_model}, got {cfg.llm.model}"
     assert cfg.max_steps == 20
-    assert cfg.rag.chunk_size == 800
+    assert cfg.rag.chunk_size == int(os.getenv("RAG_CHUNK_SIZE", "800"))
 
 
 def test_tools() -> None:
