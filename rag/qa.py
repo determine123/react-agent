@@ -208,10 +208,10 @@ class RAGQA:
         """
         max_retries = 2
         all_sources: list[dict] = []
+        query = question
 
         for attempt in range(max_retries + 1):
             # Retrieve
-            query = question if attempt == 0 else refined_query
             docs = self.vector_store.query(query, top_k=top_k)
 
             if not docs:
@@ -237,7 +237,7 @@ class RAGQA:
 
             # Refine query for next attempt
             if attempt < max_retries:
-                refined_query = self._refine_query(question, answer, reflection)
+                query = self._refine_query(question, answer, reflection)
 
         if return_sources:
             return {
