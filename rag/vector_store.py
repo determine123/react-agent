@@ -147,6 +147,7 @@ class VectorStore:
                 from chromadb.utils.embedding_functions import (
                     OpenAIEmbeddingFunction,
                 )
+
                 from config import load_config
 
                 llm_cfg = load_config().llm

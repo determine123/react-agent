@@ -1,10 +1,11 @@
 """Unit tests for tools/"""
 
 import pytest
+
 from tools.calculator import calculate
+from tools.file_ops import list_notes, read_note, write_note
 from tools.registry import ToolRegistry
-from tools.time_tool import get_current_time, days_between
-from tools.file_ops import write_note, read_note, list_notes
+from tools.time_tool import days_between, get_current_time
 
 
 class TestCalculator:

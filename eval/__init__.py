@@ -6,8 +6,8 @@ from eval.report import ReportConfig, generate_html_report
 __all__ = [
     "EvalReport",
     "EvalResult",
-    "generate_html_report",
     "ReportConfig",
+    "generate_html_report",
     "run_eval",
     "run_ragas_eval",
 ]

@@ -9,6 +9,8 @@ from tools.weather import get_weather
 from tools.web_fetch import fetch_page
 
 __all__ = [
+    "SearchTool",
+    "ToolRegistry",
     "calculate",
     "days_between",
     "fetch_page",
@@ -16,8 +18,6 @@ __all__ = [
     "get_weather",
     "list_notes",
     "read_note",
-    "SearchTool",
-    "ToolRegistry",
     "web_search",
     "write_note",
 ]

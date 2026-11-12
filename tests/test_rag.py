@@ -1,7 +1,9 @@
 """Unit tests for rag/ — loader, splitter, vector store."""
 
-import pytest
 from pathlib import Path
+
+import pytest
+
 from rag.loader import load_file
 from rag.splitter import recursive_split
 

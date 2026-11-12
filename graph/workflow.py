@@ -20,7 +20,6 @@ from typing import Annotated, Any, TypedDict
 from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
 
-
 # ---------------------------------------------------------------------------
 # State
 # ---------------------------------------------------------------------------
@@ -82,9 +81,9 @@ def agent_node(state: GraphState) -> dict:
     In production, this passes state["messages"] to the LLM and detects
     whether tool calls are requested.
     """
+    from config import load_config
     from core.agent_loop import AgentLoop
     from core.state import AgentState
-    from config import load_config
 
     cfg = load_config()
     agent_state = AgentState(system_prompt=cfg.system_prompt)
@@ -130,8 +129,9 @@ def tool_node(state: GraphState) -> dict:
     Reads the last assistant message's tool_calls, dispatches each via
     ToolRegistry, and appends tool-result messages.
     """
-    from tools.registry import ToolRegistry
     import json
+
+    from tools.registry import ToolRegistry
 
     tools = ToolRegistry()
     messages: list[dict] = []

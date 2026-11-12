@@ -6,9 +6,9 @@ from rag.splitter import recursive_split
 from rag.vector_store import VectorStore
 
 __all__ = [
+    "RAGQA",
+    "VectorStore",
     "load_directory",
     "load_file",
-    "RAGQA",
     "recursive_split",
-    "VectorStore",
 ]

@@ -17,7 +17,6 @@ if TYPE_CHECKING:
 from llm.client import LLMClient
 from rag.vector_store import VectorStore
 
-
 # ---------------------------------------------------------------------------
 # Prompt templates
 # ---------------------------------------------------------------------------

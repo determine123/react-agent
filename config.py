@@ -10,8 +10,8 @@ from typing import Optional
 class LLMConfig:
     provider: str = "openai"                 # openai | anthropic | ollama
     model: str = "gpt-4o"
-    api_key: Optional[str] = None
-    base_url: Optional[str] = None
+    api_key: str | None = None
+    base_url: str | None = None
     temperature: float = 0.0
     max_tokens: int = 4096
     timeout_s: float = 120.0

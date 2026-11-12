@@ -24,9 +24,9 @@ def get_weather(city: str) -> dict:
         return {
             "city": city,
             "summary": (
-                f"Search API is not configured. Set TAVILY_API_KEY in .env to "
-                f"enable real weather lookups. I'll try to answer from my "
-                f"training knowledge instead."
+                "Search API is not configured. Set TAVILY_API_KEY in .env to "
+                "enable real weather lookups. I'll try to answer from my "
+                "training knowledge instead."
             ),
             "results": [],
             "source": "fallback",

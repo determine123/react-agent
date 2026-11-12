@@ -115,7 +115,7 @@ def test_search() -> None:
 
 
 def test_time() -> None:
-    from tools.time_tool import get_current_time, days_between
+    from tools.time_tool import days_between, get_current_time
 
     now = get_current_time()
     assert "datetime" in now
@@ -143,7 +143,7 @@ def test_web_fetch() -> None:
 
 
 def test_file_ops() -> None:
-    from tools.file_ops import write_note, read_note, list_notes
+    from tools.file_ops import list_notes, read_note, write_note
 
     # Write
     r = write_note("smoke_test.txt", "Hello from smoke test!")
@@ -184,7 +184,7 @@ def test_splitter() -> None:
 
 
 def test_router() -> None:
-    from core.tool_router import ToolRouter, Intent
+    from core.tool_router import Intent, ToolRouter
 
     router = ToolRouter()
 

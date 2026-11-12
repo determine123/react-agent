@@ -67,8 +67,8 @@ def _run_chat(config, *, stateless: bool = False, mode: str = "react") -> None:
     """Interactive agent chat loop with memory, advanced strategies & tool router."""
     from core.agent_loop import AgentLoop
     from core.state import AgentState
-    from memory.memory import Memory
     from core.tool_router import ToolRouter
+    from memory.memory import Memory
 
     state = AgentState(system_prompt=config.system_prompt)
     base_agent = AgentLoop(config=config, state=state)
@@ -181,8 +181,9 @@ def _execute_routed_tool(routing, user_input: str) -> str | None:
     Returns a human-readable answer string, or None if routing should
     fall through to the full ReAct loop.
     """
-    from tools.registry import ToolRegistry
     import json
+
+    from tools.registry import ToolRegistry
 
     tools = ToolRegistry()
 
@@ -210,7 +211,7 @@ def _execute_routed_tool(routing, user_input: str) -> str | None:
         content = result.get("content", result_str) if isinstance(result, dict) else result_str
         return f"📝 {content}"
     elif routing.intent == "note_write":
-        return f"已保存 ✓"
+        return "已保存 ✓"
     else:
         return result_str
 
@@ -336,6 +337,7 @@ def _run_api(args) -> None:
     print("Starting FastAPI server at http://0.0.0.0:8000 ...")
     print("Endpoints: POST /chat  POST /rag  GET /tools  GET /health")
     import uvicorn
+
     from api import create_app
 
     app = create_app()
