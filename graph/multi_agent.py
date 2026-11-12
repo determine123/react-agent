@@ -140,8 +140,8 @@ class MultiAgentOrchestrator:
 
 def planner_node(state: MultiAgentState) -> dict:
     """Decompose user request into subtasks via LLM."""
-    from llm.client import LLMClient
     from config import load_config
+    from llm.client import LLMClient
 
     cfg = load_config()
     llm = LLMClient(cfg.llm)
@@ -165,7 +165,10 @@ def planner_node(state: MultiAgentState) -> dict:
             subtasks = json.loads(response[start:end])
         else:
             subtasks = [request]  # fallback: execute as single task
-    except (json.JSONDecodeError, Exception):
+    except json.JSONDecodeError:
+        subtasks = [request]
+
+    if not isinstance(subtasks, list):
         subtasks = [request]
 
     logger.info("Planner: %d subtasks created", len(subtasks))
@@ -179,9 +182,9 @@ def planner_node(state: MultiAgentState) -> dict:
 
 def executor_node(state: MultiAgentState) -> dict:
     """Execute the current subtask using the ReAct agent."""
+    from config import load_config
     from core.agent_loop import AgentLoop
     from core.state import AgentState
-    from config import load_config
 
     cfg = load_config()
     subtasks = state.get("subtasks", [])
@@ -231,8 +234,8 @@ def executor_node(state: MultiAgentState) -> dict:
 
 def synthesis_node(state: MultiAgentState) -> dict:
     """Combine all task results into a final answer."""
-    from llm.client import LLMClient
     from config import load_config
+    from llm.client import LLMClient
 
     cfg = load_config()
     llm = LLMClient(cfg.llm)

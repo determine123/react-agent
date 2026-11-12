@@ -22,9 +22,10 @@ Architecture:
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable
+from typing import Any
 
 
 class Intent(str, Enum):
@@ -122,7 +123,7 @@ _RULES: list[Rule] = [
         Intent.NOTE_WRITE,
         patterns=[
             r"(保存|记录|写下|存下来|记住|保存下来|写笔记)",
-            r"(帮我记|帮我写|帮我存|帮我保存)",
+            r"(帮我记|帮我写笔记|帮我存|帮我保存)",
         ],
         keywords=["save note", "write note", "记住", "保存", "写笔记", "记录下来"],
         tool_name="write_note",
@@ -253,7 +254,7 @@ class ToolRouter:
         if intent == Intent.MATH:
             # Try to extract a math expression
             expr_match = re.search(
-                r"((?:[\d\s\+\-\*\/\^\%\.\(\)pi\e\tau]|sqrt|abs|sin|cos|tan|log)+)",
+                r"((?:[\d\s+*/^%.()pie-]|tau|sqrt|abs|sin|cos|tan|log)+)",
                 text,
                 re.IGNORECASE,
             )

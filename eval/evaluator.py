@@ -18,10 +18,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from config import Config, load_config
 from core.agent_loop import AgentLoop
 from core.state import AgentState
-from config import Config, load_config
-
 
 # ---------------------------------------------------------------------------
 # Data classes
@@ -146,14 +145,14 @@ def run_ragas_eval(
         EvalReport with RAGAS scores attached to each result.
     """
     try:
+        from datasets import Dataset
         from ragas import evaluate as ragas_evaluate
         from ragas.metrics import (
-            faithfulness,
             answer_relevancy,
             context_precision,
             context_recall,
+            faithfulness,
         )
-        from datasets import Dataset
     except ImportError:
         raise ImportError(
             "ragas and datasets are required for RAGAS evaluation. "
@@ -234,7 +233,10 @@ def run_ragas_eval(
                         if not isinstance(v, str) and k != "question"
                     }
                     rag_idx += 1
-        except Exception as exc:
+        # RAGAS can raise provider-, dataset-, and metric-specific exceptions.
+        # Keep the optional evaluation failure inside the report instead of
+        # aborting the whole run.
+        except Exception as exc:  # noqa: BLE001
             report.results.append(
                 EvalResult(
                     question_id="ragas_error",

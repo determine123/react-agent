@@ -36,7 +36,10 @@ class SearchTool:
 
         try:
             return self._tavily_search(query, max_results)
-        except Exception as exc:
+        # The search SDK wraps network, authentication, and response-shape
+        # failures in provider-specific exception types. Degrade gracefully so
+        # the agent can still answer with a clear availability message.
+        except Exception as exc:  # noqa: BLE001
             return _fallback(query, max_results, reason=str(exc))
 
     def is_available(self) -> bool:

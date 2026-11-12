@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from tools.calculator import calculate
 from tools.file_ops import list_notes, read_note, write_note

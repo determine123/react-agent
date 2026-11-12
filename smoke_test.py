@@ -8,6 +8,7 @@ Usage:
 from __future__ import annotations
 
 import sys
+from contextlib import suppress
 from pathlib import Path
 
 
@@ -49,10 +50,12 @@ def main() -> None:
         try:
             fn()
             passed += 1
-            print(f"  ✓ {name}")
-        except Exception as exc:
+            print(f"  [PASS] {name}")
+        # This is the smoke-test runner: every test failure must be reported
+        # and counted rather than aborting the remaining checks.
+        except Exception as exc:  # noqa: BLE001
             failed += 1
-            print(f"  ✗ {name}  —  {exc}")
+            print(f"  [FAIL] {name} - {exc}")
 
     print(f"\n{'=' * 60}")
     print(f"Results: {passed} passed, {failed} failed, {len(tests)} total")
@@ -67,12 +70,15 @@ def main() -> None:
 # ---------------------------------------------------------------------------
 
 def test_config() -> None:
-    from config import load_config
+    import os
+
+    from config import LLMConfig, load_config
 
     cfg = load_config()
-    assert cfg.llm.model == "deepseek-chat", f"Expected deepseek-chat, got {cfg.llm.model}"
+    expected_model = os.getenv("LLM_MODEL", LLMConfig().model)
+    assert cfg.llm.model == expected_model, f"Expected {expected_model}, got {cfg.llm.model}"
     assert cfg.max_steps == 20
-    assert cfg.rag.chunk_size == 800
+    assert cfg.rag.chunk_size == int(os.getenv("RAG_CHUNK_SIZE", "800"))
 
 
 def test_tools() -> None:
@@ -112,7 +118,7 @@ def test_search() -> None:
 
 
 def test_time() -> None:
-    from tools.time_tool import get_current_time, days_between
+    from tools.time_tool import days_between, get_current_time
 
     now = get_current_time()
     assert "datetime" in now
@@ -140,7 +146,7 @@ def test_web_fetch() -> None:
 
 
 def test_file_ops() -> None:
-    from tools.file_ops import write_note, read_note, list_notes
+    from tools.file_ops import list_notes, read_note, write_note
 
     # Write
     r = write_note("smoke_test.txt", "Hello from smoke test!")
@@ -181,7 +187,7 @@ def test_splitter() -> None:
 
 
 def test_router() -> None:
-    from core.tool_router import ToolRouter, Intent
+    from core.tool_router import Intent, ToolRouter
 
     router = ToolRouter()
 
@@ -292,10 +298,8 @@ def test_vector_store() -> None:
         # Embedding model download may fail in CI/offline — acceptable skip
         print(f"  (vector store test skipped — embedding model unavailable: {e})")
     finally:
-        try:
+        with suppress(Exception):
             store.clear()
-        except Exception:
-            pass
 
 
 def test_workflow() -> None:
@@ -303,9 +307,9 @@ def test_workflow() -> None:
 
     wf = build_workflow()
     assert wf is not None
-    # Graph should have nodes
-    nodes = wf.get_graph().nodes
-    assert "agent" in nodes or True  # LangGraph API may vary
+    graph = wf.get_graph()
+    assert graph is not None
+    assert graph.nodes
 
 
 def test_rag_qa() -> None:
@@ -333,16 +337,13 @@ def test_rag_qa() -> None:
             assert isinstance(result, dict)
             assert "answer" in result
             assert len(result["sources"]) > 0
-        except Exception:
-            # API call may fail in test — that's acceptable
-            pass
+        except Exception as exc:  # noqa: BLE001 - external LLM may be unavailable
+            print(f"  (RAG QA query skipped — LLM unavailable: {exc})")
     except (OSError, RuntimeError) as e:
         print(f"  (RAG QA test skipped — embedding model unavailable: {e})")
     finally:
-        try:
+        with suppress(Exception):
             qa.vector_store.clear()
-        except Exception:
-            pass
 
 
 if __name__ == "__main__":

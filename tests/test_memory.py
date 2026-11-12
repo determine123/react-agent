@@ -1,7 +1,9 @@
 """Unit tests for memory/memory.py"""
 
-import pytest
 from pathlib import Path
+
+import pytest
+
 from config import MemoryConfig
 from memory.memory import Memory
 
