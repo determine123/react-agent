@@ -49,7 +49,7 @@ def generate_html_report(
         status_class = "pass" if r.passed else "fail"
         ragas_cells = ""
         if r.ragas_scores:
-            for k, v in r.ragas_scores.items():
+            for v in r.ragas_scores.values():
                 color = _score_color(v)
                 ragas_cells += f'<td style="color:{color}">{v:.3f}</td>'
         else:

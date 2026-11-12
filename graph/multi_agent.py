@@ -165,7 +165,10 @@ def planner_node(state: MultiAgentState) -> dict:
             subtasks = json.loads(response[start:end])
         else:
             subtasks = [request]  # fallback: execute as single task
-    except (json.JSONDecodeError, Exception):
+    except json.JSONDecodeError:
+        subtasks = [request]
+
+    if not isinstance(subtasks, list):
         subtasks = [request]
 
     logger.info("Planner: %d subtasks created", len(subtasks))

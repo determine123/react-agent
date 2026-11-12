@@ -173,7 +173,7 @@ class VectorStore:
                 model_name="all-MiniLM-L6-v2"
             )
             return self._emb_fn
-        except (ImportError, Exception):
+        except (ImportError, OSError, RuntimeError, ValueError):
             # ONNX download may fail in some environments — None uses
             # ChromaDB's own default, which also attempts ONNX
             self._emb_fn = None

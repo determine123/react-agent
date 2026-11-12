@@ -157,7 +157,10 @@ def tool_node(state: GraphState) -> dict:
 
                 try:
                     result = tools.dispatch(fn_name, **fn_args)
-                except Exception as exc:
+                # Tool failures are observations for the next agent turn, not
+                # workflow-fatal errors. Tool implementations may raise errors
+                # from third-party APIs, so this boundary must stay broad.
+                except Exception as exc:  # noqa: BLE001
                     result = {"error": str(exc)}
 
                 result_str = result if isinstance(result, str) else json.dumps(result, ensure_ascii=False)

@@ -59,5 +59,5 @@ def calculate(expression: str) -> float | str:
     try:
         tree = ast.parse(expression.strip(), mode="eval")
         return _safe_eval(tree.body)
-    except Exception as exc:
+    except (ArithmeticError, KeyError, SyntaxError, TypeError, ValueError) as exc:
         return f"Calculator error: {exc}"

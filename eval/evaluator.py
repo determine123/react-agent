@@ -233,7 +233,10 @@ def run_ragas_eval(
                         if not isinstance(v, str) and k != "question"
                     }
                     rag_idx += 1
-        except Exception as exc:
+        # RAGAS can raise provider-, dataset-, and metric-specific exceptions.
+        # Keep the optional evaluation failure inside the report instead of
+        # aborting the whole run.
+        except Exception as exc:  # noqa: BLE001
             report.results.append(
                 EvalResult(
                     question_id="ragas_error",

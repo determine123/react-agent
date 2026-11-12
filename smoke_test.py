@@ -8,6 +8,7 @@ Usage:
 from __future__ import annotations
 
 import sys
+from contextlib import suppress
 from pathlib import Path
 
 
@@ -49,10 +50,12 @@ def main() -> None:
         try:
             fn()
             passed += 1
-            print(f"  ✓ {name}")
-        except Exception as exc:
+            print(f"  [PASS] {name}")
+        # This is the smoke-test runner: every test failure must be reported
+        # and counted rather than aborting the remaining checks.
+        except Exception as exc:  # noqa: BLE001
             failed += 1
-            print(f"  ✗ {name}  —  {exc}")
+            print(f"  [FAIL] {name} - {exc}")
 
     print(f"\n{'=' * 60}")
     print(f"Results: {passed} passed, {failed} failed, {len(tests)} total")
@@ -295,10 +298,8 @@ def test_vector_store() -> None:
         # Embedding model download may fail in CI/offline — acceptable skip
         print(f"  (vector store test skipped — embedding model unavailable: {e})")
     finally:
-        try:
+        with suppress(Exception):
             store.clear()
-        except Exception:
-            pass
 
 
 def test_workflow() -> None:
@@ -306,9 +307,9 @@ def test_workflow() -> None:
 
     wf = build_workflow()
     assert wf is not None
-    # Graph should have nodes
-    nodes = wf.get_graph().nodes
-    assert "agent" in nodes or True  # LangGraph API may vary
+    graph = wf.get_graph()
+    assert graph is not None
+    assert graph.nodes
 
 
 def test_rag_qa() -> None:
@@ -336,16 +337,13 @@ def test_rag_qa() -> None:
             assert isinstance(result, dict)
             assert "answer" in result
             assert len(result["sources"]) > 0
-        except Exception:
-            # API call may fail in test — that's acceptable
-            pass
+        except Exception as exc:  # noqa: BLE001 - external LLM may be unavailable
+            print(f"  (RAG QA query skipped — LLM unavailable: {exc})")
     except (OSError, RuntimeError) as e:
         print(f"  (RAG QA test skipped — embedding model unavailable: {e})")
     finally:
-        try:
+        with suppress(Exception):
             qa.vector_store.clear()
-        except Exception:
-            pass
 
 
 if __name__ == "__main__":

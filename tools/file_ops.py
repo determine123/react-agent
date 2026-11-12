@@ -36,7 +36,7 @@ def write_note(filename: str, content: str) -> dict:
             "size": len(content),
             "status": "written",
         }
-    except Exception as exc:
+    except (OSError, UnicodeError) as exc:
         return {"error": f"Failed to write file: {exc}", "filename": safe_name}
 
 
@@ -67,7 +67,7 @@ def read_note(filename: str) -> dict:
             "size": len(content),
             "status": "read",
         }
-    except Exception as exc:
+    except (OSError, UnicodeError) as exc:
         return {"error": f"Failed to read file: {exc}", "filename": safe_name}
 
 

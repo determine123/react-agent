@@ -21,6 +21,9 @@ Modes:
 from __future__ import annotations
 
 import argparse
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def main() -> None:
@@ -189,7 +192,8 @@ def _execute_routed_tool(routing, user_input: str) -> str | None:
 
     try:
         result = tools.dispatch(routing.tool_name, **routing.tool_args)
-    except Exception:
+    except Exception as exc:  # noqa: BLE001 - routing must fall back to ReAct
+        logger.warning("Direct %s routing failed: %s", routing.tool_name, exc)
         return None  # tool failed → fall through to ReAct
 
     if isinstance(result, dict):

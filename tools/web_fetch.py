@@ -24,13 +24,16 @@ def fetch_page(url: str, max_chars: int = 3000) -> dict:
 
     try:
         import httpx
-
-        with httpx.Client(timeout=15, follow_redirects=True) as client:
-            r = client.get(url, headers={"User-Agent": "AgentProject/1.0"})
-            r.raise_for_status()
-            html = r.text
-    except Exception as exc:
-        error_msg = f"httpx error: {exc}"
+    except ImportError as exc:
+        error_msg = f"httpx unavailable: {exc}"
+    else:
+        try:
+            with httpx.Client(timeout=15, follow_redirects=True) as client:
+                r = client.get(url, headers={"User-Agent": "AgentProject/1.0"})
+                r.raise_for_status()
+                html = r.text
+        except (httpx.HTTPError, OSError, ValueError) as exc:
+            error_msg = f"httpx error: {exc}"
 
     # Fallback: stdlib urllib
     if html is None:
@@ -40,7 +43,7 @@ def fetch_page(url: str, max_chars: int = 3000) -> dict:
             req = Request(url, headers={"User-Agent": "AgentProject/1.0"})
             with urlopen(req, timeout=15) as resp:
                 html = resp.read().decode("utf-8", errors="replace")
-        except Exception as exc:
+        except (OSError, ValueError) as exc:
             error_msg += f" | urllib error: {exc}"
             return {"error": error_msg.strip(), "url": url, "status": "fetch_failed"}
 
