@@ -15,14 +15,18 @@ Usage:
 
 from __future__ import annotations
 
+import asyncio
 import json
+import secrets
 import time
 from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from core.session_store import AgentSessionStore
 
 # ---------------------------------------------------------------------------
 # Request / Response models
@@ -31,6 +35,15 @@ from pydantic import BaseModel, Field
 
 class ChatRequest(BaseModel):
     message: str = Field(..., description="User message", min_length=1)
+    session_id: str | None = Field(
+        None,
+        description=(
+            "Conversation id. Omit for a new isolated session; reuse the id "
+            "returned by the API to continue the conversation."
+        ),
+        min_length=1,
+        max_length=128,
+    )
     system_prompt: str | None = Field(
         None, description="Custom system prompt (uses default if unset)"
     )
@@ -38,10 +51,21 @@ class ChatRequest(BaseModel):
         False, description="Reset conversation history before this message"
     )
 
+    @field_validator("session_id")
+    @classmethod
+    def _normalise_session_id(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        value = value.strip()
+        if not value:
+            raise ValueError("session_id must not be blank")
+        return value
+
 
 class ChatResponse(BaseModel):
     answer: str
-    tool_calls_made: list[str] = []
+    session_id: str
+    tool_calls_made: list[str] = Field(default_factory=list)
     steps: int = 1
     duration_ms: float = 0
 
@@ -78,7 +102,6 @@ class ToolsResponse(BaseModel):
 
 # Global state (lazy-initialised per worker)
 _config = None
-_agent_state = None
 _qa = None
 
 
@@ -91,14 +114,62 @@ def _get_config():
     return _config
 
 
-def _get_agent_state():
-    global _agent_state
-    if _agent_state is None:
-        from core.state import AgentState
+def _new_agent_state():
+    from core.state import AgentState
 
-        cfg = _get_config()
-        _agent_state = AgentState(system_prompt=cfg.system_prompt)
-    return _agent_state
+    cfg = _get_config()
+    return AgentState(system_prompt=cfg.system_prompt)
+
+
+def _build_agent_loop(config, state):
+    from core.agent_loop import AgentLoop
+
+    return AgentLoop(config=config, state=state)
+
+
+def _new_session_id() -> str:
+    return f"anon-{secrets.token_urlsafe(24)}"
+
+
+def _run_agent_turn(req: ChatRequest, state):
+    """Execute one turn while the caller holds the session lock."""
+    cfg = _get_config()
+    history_start = 0 if req.clear_history else len(state.messages)
+
+    if req.clear_history:
+        state.messages.clear()
+        state.scratchpad.clear()
+        state.finished = False
+        state.step_count = 0
+
+    if req.system_prompt:
+        state.system_prompt = req.system_prompt
+
+    state.finished = False
+    state.step_count = 0
+
+    t0 = time.perf_counter()
+    agent = _build_agent_loop(cfg, state)
+    answer = agent.run(req.message)
+    elapsed = (time.perf_counter() - t0) * 1000
+
+    # Report tool calls made by this turn, not by earlier turns in the session.
+    tool_calls_made = []
+    for msg in state.messages[history_start:]:
+        if msg.role == "assistant" and msg.tool_calls:
+            for tc in msg.tool_calls:
+                tool_calls_made.append(tc["function"]["name"])
+
+    return answer, tool_calls_made, state.step_count, round(elapsed, 2)
+
+
+def _run_session_turn(
+    session_store: AgentSessionStore,
+    session_id: str,
+    req: ChatRequest,
+):
+    with session_store.acquire(session_id) as state:
+        return _run_agent_turn(req, state)
 
 
 def _get_qa():
@@ -110,7 +181,9 @@ def _get_qa():
     return _qa
 
 
-def create_app() -> FastAPI:
+def create_app(*, session_store: AgentSessionStore | None = None) -> FastAPI:
+    sessions = session_store or AgentSessionStore(_new_agent_state)
+
     app = FastAPI(
         title="Agent Project API",
         description="ReAct Agent + RAG Q&A with tool calling",
@@ -132,39 +205,17 @@ def create_app() -> FastAPI:
     @app.post("/chat", response_model=ChatResponse)
     async def chat(req: ChatRequest):
         """Send a message to the ReAct agent. Multi-turn by default."""
-        from core.agent_loop import AgentLoop
-
-        cfg = _get_config()
-        state = _get_agent_state()
-
-        if req.clear_history:
-            state.messages.clear()
-            state.finished = False
-            state.step_count = 0
-
-        if req.system_prompt:
-            state.system_prompt = req.system_prompt
-
-        state.finished = False
-        state.step_count = 0
-
-        t0 = time.perf_counter()
-        agent = AgentLoop(config=cfg, state=state)
-        answer = agent.run(req.message)
-        elapsed = (time.perf_counter() - t0) * 1000
-
-        # Collect tool call names from assistant messages
-        tool_calls_made = []
-        for msg in state.messages:
-            if msg.role == "assistant" and msg.tool_calls:
-                for tc in msg.tool_calls:
-                    tool_calls_made.append(tc["function"]["name"])
+        session_id = req.session_id or _new_session_id()
+        answer, tool_calls_made, steps, duration_ms = await asyncio.to_thread(
+            _run_session_turn, sessions, session_id, req
+        )
 
         return ChatResponse(
             answer=answer,
+            session_id=session_id,
             tool_calls_made=tool_calls_made,
-            steps=state.step_count,
-            duration_ms=round(elapsed, 2),
+            steps=steps,
+            duration_ms=duration_ms,
         )
 
     # ------------------------------------------------------------------
@@ -174,23 +225,16 @@ def create_app() -> FastAPI:
     @app.post("/chat/stream")
     async def chat_stream(req: ChatRequest):
         """Stream the agent's response via Server-Sent Events."""
+        session_id = req.session_id or _new_session_id()
 
         async def event_generator():
-            from core.agent_loop import AgentLoop
-
-            cfg = _get_config()
-            state = _get_agent_state()
-
-            if req.clear_history:
-                state.messages.clear()
-            state.finished = False
-            state.step_count = 0
-
-            agent = AgentLoop(config=cfg, state=state)
-            answer = agent.run(req.message)
+            answer, _, _, _ = await asyncio.to_thread(
+                _run_session_turn, sessions, session_id, req
+            )
 
             # Yield the final answer as a single SSE event
-            yield f"data: {json.dumps({'answer': answer})}\n\n"
+            payload = {"answer": answer, "session_id": session_id}
+            yield f"data: {json.dumps(payload)}\n\n"
             yield "data: [DONE]\n\n"
 
         return StreamingResponse(

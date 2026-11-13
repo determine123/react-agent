@@ -230,18 +230,38 @@ python main.py --api --port 8000
 | `POST` | `/rag/index` | 索引文档 |
 | `GET` | `/tools` | 列出可用工具 |
 
+### 会话隔离
+
+`/chat` 与 `/chat/stream` 使用 `session_id` 隔离不同客户端的对话状态。复用同一个
+`session_id` 可以延续上下文；不传时会创建独立会话，并在响应的 `session_id` 字段中返回。
+同一会话的并发请求会串行执行，避免历史记录、步数和工具调用状态互相覆盖。
+
+会话存储在 API 进程内，默认最多保留 1000 个会话，闲置 1 小时后过期。多进程部署需要
+为同一会话配置粘性路由，或替换为共享存储。`session_id` 不是身份认证凭据，公开部署时
+仍应在网关层增加鉴权与限流。
+
 ### 调用示例
 
 ```python
 import requests
 
-# Agent 聊天
+# 新会话：响应会返回可用于后续请求的 session_id
 resp = requests.post("http://localhost:8000/chat", json={
     "message": "计算 (15 + 27) * 3 并搜索今天上海的天气",
     "clear_history": True
 })
 print(resp.json())
-# {"answer": "...", "tool_calls_made": ["calculate", "web_search"], "steps": 3, "duration_ms": 2340.5}
+# {"answer": "...", "session_id": "anon-...", "tool_calls_made": ["calculate", "web_search"], "steps": 3, "duration_ms": 2340.5}
+session_id = resp.json()["session_id"]
+
+# 延续同一会话
+resp = requests.post("http://localhost:8000/chat", json={
+    "session_id": session_id,
+    "message": "把刚才的计算结果乘以 2"
+})
+print(resp.json())
+
+# SSE 最终事件同样包含 answer 和 session_id
 
 # RAG 问答
 resp = requests.post("http://localhost:8000/rag", json={
