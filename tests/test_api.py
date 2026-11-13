@@ -1,8 +1,11 @@
 """Integration tests for the FastAPI chat session boundaries."""
 
+import asyncio
 import json
+import threading
 from types import SimpleNamespace
 
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 
@@ -169,3 +172,75 @@ def test_streaming_uses_system_prompt_and_shares_session_state(client):
         "prompt": "stream prompt",
         "history": ["first", "second"],
     }
+
+class ThreadRecordingRAG:
+    """Fake synchronous RAG service which records its execution threads."""
+
+    def __init__(self):
+        self.calls = []
+
+    def _record(self, operation):
+        self.calls.append((operation, threading.current_thread().name))
+
+    def index_count(self):
+        self._record("index_count")
+        return 1
+
+    def answer(self, question, *, top_k, return_sources):
+        self._record("answer")
+        return {"answer": f"{question}:{top_k}:{return_sources}", "sources": []}
+
+    def index_documents(self, directory):
+        self._record("index_documents")
+        return 2
+
+
+def test_rag_qa_runs_synchronous_pipeline_off_event_loop(monkeypatch):
+    qa = ThreadRecordingRAG()
+    monkeypatch.setattr(api, "_get_qa", lambda: qa)
+
+    async def request():
+        transport = httpx.ASGITransport(app=api.create_app())
+        async with httpx.AsyncClient(
+            transport=transport, base_url="http://test"
+        ) as client:
+            return await client.post(
+                "/rag", json={"question": "what is rag", "top_k": 3}
+            )
+
+    response = asyncio.run(request())
+
+    assert response.status_code == 200
+    assert response.json()["answer"] == "what is rag:3:True"
+    assert [operation for operation, _ in qa.calls] == ["index_count", "answer"]
+    assert all(
+        thread_name != threading.main_thread().name
+        for _, thread_name in qa.calls
+    )
+
+
+def test_rag_index_runs_filesystem_and_indexing_off_event_loop(
+    monkeypatch, tmp_path
+):
+    qa = ThreadRecordingRAG()
+    monkeypatch.setattr(api, "_get_qa", lambda: qa)
+
+    async def request():
+        transport = httpx.ASGITransport(app=api.create_app())
+        async with httpx.AsyncClient(
+            transport=transport, base_url="http://test"
+        ) as client:
+            return await client.post(
+                "/rag/index", json={"directory": str(tmp_path)}
+            )
+
+    response = asyncio.run(request())
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "chunks_indexed": 2,
+        "directory": str(tmp_path),
+    }
+    assert len(qa.calls) == 1
+    assert qa.calls[0][0] == "index_documents"
+    assert qa.calls[0][1] != threading.main_thread().name

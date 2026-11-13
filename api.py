@@ -181,6 +181,29 @@ def _get_qa():
     return _qa
 
 
+def _answer_rag_question(qa, question: str, top_k: int):
+    """Run the synchronous RAG pipeline outside the API event loop."""
+    chunk_count = qa.index_count()
+    if chunk_count == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="No documents indexed. Use POST /rag/index first.",
+        )
+    result = qa.answer(question, top_k=top_k, return_sources=True)
+    return chunk_count, result
+
+
+def _index_rag_documents(qa, directory_text: str):
+    """Validate and index a directory without blocking the event loop."""
+    directory = Path(directory_text)
+    if not directory.exists() or not directory.is_dir():
+        raise HTTPException(
+            status_code=400,
+            detail=f"Directory not found: {directory_text}",
+        )
+    return qa.index_documents(str(directory)), str(directory)
+
+
 def create_app(*, session_store: AgentSessionStore | None = None) -> FastAPI:
     sessions = session_store or AgentSessionStore(_new_agent_state)
 
@@ -250,33 +273,23 @@ def create_app(*, session_store: AgentSessionStore | None = None) -> FastAPI:
     async def rag_qa(req: RAGRequest):
         """Answer a question using RAG over the indexed document corpus."""
         qa = _get_qa()
-
-        if qa.index_count() == 0:
-            raise HTTPException(
-                status_code=400,
-                detail="No documents indexed. Use POST /rag/index first.",
-            )
-
-        result = qa.answer(req.question, top_k=req.top_k, return_sources=True)
+        chunk_count, result = await asyncio.to_thread(
+            _answer_rag_question, qa, req.question, req.top_k
+        )
         return RAGResponse(
             answer=result["answer"],
             sources=result.get("sources", []),
-            chunk_count=qa.index_count(),
+            chunk_count=chunk_count,
         )
 
     @app.post("/rag/index", response_model=IndexResponse)
     async def rag_index(req: IndexRequest):
         """Index documents from a directory into the vector store."""
-        directory = Path(req.directory)
-        if not directory.exists() or not directory.is_dir():
-            raise HTTPException(
-                status_code=400,
-                detail=f"Directory not found: {req.directory}",
-            )
-
         qa = _get_qa()
-        count = qa.index_documents(str(directory))
-        return IndexResponse(chunks_indexed=count, directory=str(directory))
+        count, directory = await asyncio.to_thread(
+            _index_rag_documents, qa, req.directory
+        )
+        return IndexResponse(chunks_indexed=count, directory=directory)
 
     # ------------------------------------------------------------------
     # Tools

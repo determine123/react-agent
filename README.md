@@ -230,6 +230,9 @@ python main.py --api --port 8000
 | `POST` | `/rag/index` | 索引文档 |
 | `GET` | `/tools` | 列出可用工具 |
 
+RAG 文档加载、向量索引和问答中的同步 ChromaDB/LLM 调用会在线程池中执行，
+避免长时间请求阻塞 API 事件循环；索引或问答运行期间，`/health` 和其他请求仍可响应。
+
 ### 会话隔离
 
 `/chat` 与 `/chat/stream` 使用 `session_id` 隔离不同客户端的对话状态。复用同一个
