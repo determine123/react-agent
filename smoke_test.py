@@ -309,7 +309,9 @@ def test_workflow() -> None:
     assert wf is not None
     graph = wf.get_graph()
     assert graph is not None
-    assert graph.nodes
+    required_nodes = {"agent", "tools", "finish"}
+    missing_nodes = required_nodes.difference(graph.nodes)
+    assert not missing_nodes, f"Workflow is missing required nodes: {sorted(missing_nodes)}"
 
 
 def test_rag_qa() -> None:
